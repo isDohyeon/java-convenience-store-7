@@ -1,5 +1,7 @@
 package store.controller;
 
+import static store.utils.OutputParser.parseToString;
+
 import store.service.ProductService;
 import store.view.OutputView;
 
@@ -9,6 +11,6 @@ public class Controller {
     private final ProductService productService = new ProductService();
 
     public void run() {
-        outputView.printProducts(productService.getProducts());
+        outputView.printProducts(parseToString(productService.getProducts()));
     }
 }

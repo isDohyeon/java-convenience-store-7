@@ -40,6 +40,9 @@
 - [x] `src/main/resources/products.md`의 데이터를 읽어오는 기능
 - [ ] `src/main/resources/promotions.md`의 데이터를 읽어오는 기능
 
+### 파싱 기능
+- [x] 데이터 값을 출력을 위한 문자열로 파싱하는 기능
+
 
 ### 출력 기능
 

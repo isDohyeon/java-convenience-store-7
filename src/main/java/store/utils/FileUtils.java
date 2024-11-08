@@ -9,28 +9,29 @@ import store.domain.Product;
 
 public class FileUtils {
 
-    public static List<Product> loadProducts(String filePath) {
-        List<Product> products = new ArrayList<>();
+    private static final String DELIMITER = ",";
 
+    public static List<Product> loadProducts(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             br.readLine();
-            String line;
-            while ((line = br.readLine()) != null) {
-                List<String> values = List.of(line.split(","));
-                String name = values.get(0);
-                int price = Integer.parseInt(values.get(1));
-                int quantity = Integer.parseInt(values.get(2));
-                String promotion = getPromotion(values.get(3));
-
-                products.add(new Product(name, price, quantity, promotion));
-            }
+            return br.lines()
+                    .map(FileUtils::parseProduct)
+                    .toList();
         } catch (IOException e) {
-            e.printStackTrace();
+            return List.of();
         }
-        return products;
     }
 
-    private static String getPromotion(String promotion) {
+    private static Product parseProduct(String line) {
+        List<String> values = List.of(line.split(DELIMITER));
+        String name = values.get(0);
+        int price = Integer.parseInt(values.get(1));
+        int quantity = Integer.parseInt(values.get(2));
+        String promotion = parsePromotion(values.get(3));
+        return new Product(name, price, quantity, promotion);
+    }
+
+    private static String parsePromotion(String promotion) {
         if (promotion.equals("null")) {
             return "";
         }

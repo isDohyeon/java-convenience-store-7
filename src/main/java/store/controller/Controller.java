@@ -2,6 +2,8 @@ package store.controller;
 
 import static store.utils.OutputParser.parseToString;
 
+import java.util.List;
+import java.util.Map;
 import store.service.ProductService;
 import store.view.InputView;
 import store.view.OutputView;
@@ -14,6 +16,21 @@ public class Controller {
 
     public void run() {
         outputView.printProducts(parseToString(productService.getProducts()));
-        inputView.readItem();
+        purchase();
+    }
+
+    private void purchase() {
+        retryUntilValid(() -> {
+            List<Map<String, Integer>> purchaseRequests = inputView.readItem();
+        });
+    }
+
+    private void retryUntilValid(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+            retryUntilValid(runnable);
+        }
     }
 }

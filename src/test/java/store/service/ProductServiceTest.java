@@ -19,7 +19,7 @@ class ProductServiceTest {
     @Test
     void 총_제품_수가_16개인지_확인() {
         Products products = productService.getProducts();
-        assertThat(products.getProducts()).hasSize(16);
+        assertThat(products.getProducts()).hasSize(18);
     }
 
     @Test
@@ -42,7 +42,7 @@ class ProductServiceTest {
     @Test
     void 마지막_제품의_정보를_확인() {
         Products products = productService.getProducts();
-        Product lastProduct = products.getProducts().get(15);
+        Product lastProduct = products.getProducts().get(17);
         assertThat(lastProduct.getName()).isEqualTo("컵라면");
         assertThat(lastProduct.getPrice()).isEqualTo(1700);
         assertThat(lastProduct.getQuantity()).isEqualTo(10);

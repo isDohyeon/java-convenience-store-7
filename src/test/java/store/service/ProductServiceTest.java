@@ -29,7 +29,7 @@ class ProductServiceTest {
         assertThat(firstProduct.getName()).isEqualTo("콜라");
         assertThat(firstProduct.getPrice()).isEqualTo(1000);
         assertThat(firstProduct.getQuantity()).isEqualTo(10);
-        assertThat(firstProduct.getPromotion()).isEqualTo("탄산2+1");
+        assertThat(firstProduct.getPromotion().getName()).isEqualTo("탄산2+1");
     }
 
     @Test

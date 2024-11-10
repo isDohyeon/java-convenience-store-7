@@ -17,4 +17,24 @@ public class Promotion {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getBuyCount() {
+        return buyCount;
+    }
+
+    public int getFreeCount() {
+        return freeCount;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
 }

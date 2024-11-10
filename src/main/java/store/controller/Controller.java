@@ -1,6 +1,6 @@
 package store.controller;
 
-import static store.utils.OutputParser.parseToString;
+import static store.utils.OutputParser.parseProducts;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ public class Controller {
     private final ProductService productService = new ProductService();
 
     public void run() {
-        outputView.printProducts(parseToString(productService.getProducts()));
+        outputView.printProducts(parseProducts(productService.getProducts()));
         purchase();
     }
 

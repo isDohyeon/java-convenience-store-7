@@ -1,5 +1,7 @@
 package store.domain;
 
+import store.constants.ErrorMessages;
+
 public class Product {
 
     private final String name;
@@ -12,6 +14,16 @@ public class Product {
         this.price = price;
         this.promotion = promotion;
         this.quantity = quantity;
+    }
+
+    public void reduceStock(int quantity){
+        this.quantity -= quantity;
+    }
+
+    public void validateStock(int quantity) {
+        if (this.quantity < quantity) {
+            throw new IllegalArgumentException(ErrorMessages.QUANTITY.getMessage());
+        }
     }
 
     public String getName() {

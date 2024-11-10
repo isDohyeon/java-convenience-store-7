@@ -15,7 +15,7 @@ class ValidatorTest {
             "[사이다-1],[물-2],[탄산수-3]"
     })
     void 올바른_입력값_검증(String input) {
-        assertDoesNotThrow(() -> Validator.validatePurchaseInput(input));
+        assertDoesNotThrow(() -> Validator.validateItemsInput(input));
     }
 
     @ParameterizedTest
@@ -27,7 +27,7 @@ class ValidatorTest {
             "[콜라,10]"
     })
     void 잘못된_입력값_검증(String input) {
-        Assertions.assertThatThrownBy(() -> Validator.validatePurchaseInput(input))
+        Assertions.assertThatThrownBy(() -> Validator.validateItemsInput(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

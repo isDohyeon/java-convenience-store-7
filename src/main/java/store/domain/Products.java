@@ -2,6 +2,7 @@ package store.domain;
 
 import java.util.List;
 import java.util.Map;
+import store.constants.ErrorMessages;
 import store.utils.FileUtils;
 
 public class Products {
@@ -14,5 +15,13 @@ public class Products {
 
     public List<Product> getProducts() {
         return products;
+    }
+
+    public Product findProductByName(String productName) {
+        return products.stream()
+                .filter(product -> product.getName().equals(productName))
+                .findFirst()
+                .orElseThrow(()
+                        -> new IllegalArgumentException(ErrorMessages.PRODUCT_NAME.getMessage()));
     }
 }

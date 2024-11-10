@@ -15,12 +15,12 @@ public class InputParser {
         Pattern pattern = Pattern.compile(Validator.PURCHASE_PATTERN);
         Matcher matcher = pattern.matcher(input);
         while (matcher.find()) {
-            result.add(extractProductAndQuantity(matcher));
+            result.add(extractPurchaseInfo(matcher));
         }
         return result;
     }
 
-    private static Map<String, Integer> extractProductAndQuantity(Matcher matcher) {
+    private static Map<String, Integer> extractPurchaseInfo(Matcher matcher) {
         return new HashMap<>(Map.of(matcher.group(1), Integer.parseInt(matcher.group(2))));
     }
 }

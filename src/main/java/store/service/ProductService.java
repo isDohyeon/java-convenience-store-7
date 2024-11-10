@@ -2,6 +2,7 @@ package store.service;
 
 import java.util.List;
 import java.util.Map;
+import store.domain.Product;
 import store.domain.Products;
 import store.domain.Promotion;
 import store.utils.FileUtils;
@@ -15,8 +16,13 @@ public class ProductService {
         this.products = new Products("src/main/resources/products.md", promotions);
     }
 
-    public void purchase(List<Map<String, Integer>> request) {
-
+    public void validateProducts(List<Map<String, Integer>> items) throws IllegalArgumentException {
+        items.stream()
+                .flatMap(request -> request.entrySet().stream())
+                .forEach(entry -> {
+                    Product product = products.findProductByName(entry.getKey());
+                    product.validateStock(entry.getValue());
+                });
     }
 
     public Products getProducts() {

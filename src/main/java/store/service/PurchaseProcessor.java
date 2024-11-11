@@ -63,10 +63,12 @@ public class PurchaseProcessor {
                 totalAmount += productAmount;
             }
         }
+        finalizePurchase(totalAmount, promotionDiscount, membershipDiscount);
+    }
 
+    private void finalizePurchase(int totalAmount, int promotionDiscount, int membershipDiscount) {
         receipt.setTotalAmount(totalAmount);
         receipt.addPromotionDiscount(promotionDiscount);
-
         if (inputView.confirmMembershipDiscount()) {
             membershipDiscount = calculateMembershipDiscount(totalAmount - promotionDiscount);
         }

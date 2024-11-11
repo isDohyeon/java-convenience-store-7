@@ -7,11 +7,11 @@ import store.domain.Products;
 import store.domain.Promotion;
 import store.utils.FileUtils;
 
-public class ProductService {
+public class ProductLoader {
 
     private final Products products;
 
-    public ProductService() {
+    public ProductLoader() {
         Map<String, Promotion> promotions = FileUtils.loadPromotions("src/main/resources/promotions.md");
         this.products = new Products("src/main/resources/products.md", promotions);
     }

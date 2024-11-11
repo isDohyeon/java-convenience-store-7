@@ -4,9 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import store.domain.Product;
 import store.domain.Promotion;
 
@@ -17,21 +20,29 @@ public class FileUtils {
     public static List<Product> loadProducts(String filePath, Map<String, Promotion> promotions) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             br.readLine();
-            return br.lines()
+            return new ArrayList<>(br.lines()
                     .map(line -> parseProduct(line, promotions))
-                    .toList();
+                    .collect(Collectors.toMap(Product::getName, product -> product,
+                            (existingProduct, newProduct) -> {
+                                existingProduct.addStock(newProduct.getDefaultStock(), false);
+                                return existingProduct;
+                            },
+                            LinkedHashMap<String, Product>::new))
+                    .values());
         } catch (IOException e) {
-            return List.of();
+            e.printStackTrace();
+            return Collections.emptyList();
         }
     }
 
     public static Map<String, Promotion> loadPromotions(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine();
+            br.readLine();  // Header line skip
             return br.lines()
                     .map(FileUtils::parsePromotion)
-                    .collect(HashMap::new, (map, promo) -> map.put(promo.getName(), promo), HashMap::putAll);
+                    .collect(Collectors.toMap(Promotion::getName, promotion -> promotion));
         } catch (IOException e) {
+            e.printStackTrace();
             return Map.of();
         }
     }

@@ -18,28 +18,27 @@ public class Promotion {
         this.endDate = endDate;
     }
 
+    public boolean isValidPromotion(LocalDate date) {
+        return isValidDate(date);
+    }
+
     public boolean isValidDate(LocalDate date) {
         return (date.isEqual(startDate) || date.isAfter(startDate))
                 && (date.isEqual(endDate) || date.isBefore(endDate));
+    }
+
+    public boolean isInsufficientPurchase(int quantity) {
+        if (buyCount == 1 && quantity % 2 != 0) {
+            return true;
+        }
+        return buyCount == 2 && quantity % 3 == 2;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getBuyCount() {
-        return buyCount;
-    }
-
-    public int getFreeCount() {
-        return freeCount;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
+    public int getSingleSet() {
+        return buyCount + freeCount;
     }
 }

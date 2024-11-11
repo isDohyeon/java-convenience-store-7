@@ -8,7 +8,6 @@ public class Receipt {
     private final List<String> purchasedItems = new ArrayList<>();
     private final List<String> freeItems = new ArrayList<>();
     private int totalAmount;
-    private int totalQuantity;
     private int promotionDiscount;
     private int membershipDiscount;
 

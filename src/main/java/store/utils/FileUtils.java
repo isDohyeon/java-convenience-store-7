@@ -30,19 +30,17 @@ public class FileUtils {
                             LinkedHashMap<String, Product>::new))
                     .values());
         } catch (IOException e) {
-            e.printStackTrace();
             return Collections.emptyList();
         }
     }
 
     public static Map<String, Promotion> loadPromotions(String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine();  // Header line skip
+            br.readLine();
             return br.lines()
                     .map(FileUtils::parsePromotion)
                     .collect(Collectors.toMap(Promotion::getName, promotion -> promotion));
         } catch (IOException e) {
-            e.printStackTrace();
             return Map.of();
         }
     }

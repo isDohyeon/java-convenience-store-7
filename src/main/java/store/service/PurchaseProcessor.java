@@ -12,8 +12,8 @@ import store.view.InputView;
 
 public class PurchaseProcessor {
 
-    private static final int MEMBERSHIP_DISCOUNT_RATE = 30; // 멤버십 할인 비율 (30%)
-    private static final int MEMBERSHIP_DISCOUNT_LIMIT = 8000; // 멤버십 할인 한도
+    private static final int MEMBERSHIP_DISCOUNT_RATE = 30;
+    private static final int MEMBERSHIP_DISCOUNT_LIMIT = 8000;
 
     private final InputView inputView;
     private final Products products;
@@ -40,7 +40,6 @@ public class PurchaseProcessor {
 
                 if (promotion != null && promotion.isValidPromotion(LocalDate.now())) {
                     int freeCount = 0;
-
                     if (product.isInsufficientPromotionStock(quantity)) {
                         int nonDiscountQuantity = product.getNoneDiscountAmount(quantity);
                         if (inputView.confirmPurchase(name, nonDiscountQuantity)) {
@@ -57,13 +56,19 @@ public class PurchaseProcessor {
                     promotionDiscount += product.getPrice() * freeCount;
                     receipt.addFreeItem(name, freeCount);
                 }
-                int productAmount = product.getPrice() * (quantity + additionalFree);
-                product.reduceStock(quantity, promotion != null);
-                receipt.addPurchasedItem(name, quantity + additionalFree, productAmount);
-                totalAmount += productAmount;
+                totalAmount = configTotalAmount(product, quantity, additionalFree, promotion, name, totalAmount);
             }
         }
         finalizePurchase(totalAmount, promotionDiscount, membershipDiscount);
+    }
+
+    private int configTotalAmount(Product product, int quantity, int additionalFree, Promotion promotion, String name,
+                               int totalAmount) {
+        int productAmount = product.getPrice() * (quantity + additionalFree);
+        product.reduceStock(quantity, promotion != null);
+        receipt.addPurchasedItem(name, quantity + additionalFree, productAmount);
+        totalAmount += productAmount;
+        return totalAmount;
     }
 
     private void finalizePurchase(int totalAmount, int promotionDiscount, int membershipDiscount) {

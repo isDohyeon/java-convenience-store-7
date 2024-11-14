@@ -1,6 +1,6 @@
 package store.validate;
 
-import store.constants.ErrorMessages;
+import store.messages.ErrorMessages;
 
 public class Validator {
 
@@ -8,7 +8,7 @@ public class Validator {
 
     public static void validateItemsInput(String input) {
         if (!input.matches("^" + PURCHASE_PATTERN + "(," + PURCHASE_PATTERN + ")*$")) {
-            throw new IllegalArgumentException(ErrorMessages.PATTERN.getMessage());
+            throw new IllegalArgumentException(ErrorMessages.INVALID_PATTERN.getMessage());
         }
     }
 }

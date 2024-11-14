@@ -26,56 +26,58 @@ public class PurchaseProcessor {
 
     public void purchase(List<Map<String, Integer>> items) {
         this.receipt = new Receipt();
-        int totalAmount = 0;
-        int promotionDiscount = 0;
-        int membershipDiscount = 0;
-        int additionalFree = 0;
-
         for (Map<String, Integer> item : items) {
-            for (Entry<String, Integer> entry : item.entrySet()) {
-                Product product = products.findProductByName(entry.getKey());
-                String name = product.getName();
-                int quantity = entry.getValue();
-                Promotion promotion = product.getPromotion();
-
-                if (promotion != null && promotion.isValidPromotion(LocalDate.now())) {
-                    int freeCount = 0;
-                    if (product.isInsufficientPromotionStock(quantity)) {
-                        int nonDiscountQuantity = product.getNoneDiscountAmount(quantity);
-                        if (inputView.confirmPurchase(name, nonDiscountQuantity)) {
-                            freeCount += product.calculateFreeCount(quantity);
-                        }
-                    } else if (promotion.isInsufficientPurchase(quantity)) {
-                        if (inputView.confirmFreeItemAdd(name)) {
-                            freeCount += product.calculateFreeCount(quantity);
-                            freeCount += 1;
-                            additionalFree++;
-                            product.reduceStock(quantity, true);
-                        }
-                    }
-                    promotionDiscount += product.getPrice() * freeCount;
-                    receipt.addFreeItem(name, freeCount);
-                }
-                totalAmount = configTotalAmount(product, quantity, additionalFree, promotion, name, totalAmount);
-            }
+            handlePurchase(item);
         }
-        finalizePurchase(totalAmount, promotionDiscount, membershipDiscount);
     }
 
-    private int configTotalAmount(Product product, int quantity, int additionalFree, Promotion promotion, String name,
-                               int totalAmount) {
-        int productAmount = product.getPrice() * (quantity + additionalFree);
+    private void handlePurchase(Map<String, Integer> item) {
+        for (Entry<String, Integer> entry : item.entrySet()) {
+            Product product = products.findProductByName(entry.getKey());
+            String name = product.getName();
+            int quantity = entry.getValue();
+            Promotion promotion = product.getPromotion();
+            extracted(promotion, product, quantity, name);
+        }
+    }
+
+    private void extracted(Promotion promotion, Product product, int quantity, String name) {
+        int promotionDiscount = 0;
+        if (promotion != null && promotion.isValidPromotion(LocalDate.now())) {
+            int freeCount = product.calculateFreeCount(quantity);
+            if (promotion.isInsufficientPurchase(quantity, product.getPromotionStock())) {
+                if (inputView.confirmFreeItemAdd(name)) {
+                    int addedFreeCount = promotion.getFreeCount();
+                    quantity += addedFreeCount;
+                    freeCount += addedFreeCount;
+                }
+            }
+            if (product.isInsufficientPromotionStock(quantity)) {
+                int noneDiscountAmount = product.getNoneDiscountAmount(quantity);
+                if (!inputView.confirmPurchase(name, noneDiscountAmount)) {
+                    quantity -= noneDiscountAmount;
+                }
+            }
+            promotionDiscount = product.getPrice() * freeCount;
+            receipt.addFreeItem(name, freeCount);
+        }
+
+        int purchasePrice = product.getPrice() * quantity;
         product.reduceStock(quantity, promotion != null);
-        receipt.addPurchasedItem(name, quantity + additionalFree, productAmount);
-        totalAmount += productAmount;
-        return totalAmount;
+        confirmReceipt(quantity, name, purchasePrice, promotionDiscount);
     }
 
-    private void finalizePurchase(int totalAmount, int promotionDiscount, int membershipDiscount) {
-        receipt.setTotalAmount(totalAmount);
+    private void confirmReceipt(int quantity, String name, int purchaseAmount, int promotionDiscount) {
+        receipt.addPurchasedItem(name, quantity, purchaseAmount);
+        receipt.setTotalAmount(purchaseAmount);
         receipt.addPromotionDiscount(promotionDiscount);
+        confirmMembershipDiscount(purchaseAmount, promotionDiscount);
+    }
+
+    private void confirmMembershipDiscount(int purchaseAmount, int promotionDiscount) {
+        int membershipDiscount = 0;
         if (inputView.confirmMembershipDiscount()) {
-            membershipDiscount = calculateMembershipDiscount(totalAmount - promotionDiscount);
+            membershipDiscount = calculateMembershipDiscount(purchaseAmount - promotionDiscount);
         }
         receipt.addMembershipDiscount(membershipDiscount);
     }

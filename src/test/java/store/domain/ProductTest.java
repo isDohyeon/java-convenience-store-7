@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import store.constants.ErrorMessages;
+import store.messages.ErrorMessages;
 
 class ProductTest {
 
@@ -70,13 +70,13 @@ class ProductTest {
     void 기본_재고가_부족할_때_예외_발생() {
         assertThatThrownBy(() -> productWithoutPromotion.reduceStock(6, false))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessages.QUANTITY.getMessage());
+                .hasMessage(ErrorMessages.STOCK_OVERFLOW.getMessage());
     }
 
     @Test
     void 프로모션_재고가_부족할_때_예외_발생() {
         assertThatThrownBy(() -> productWithPromotion.reduceStock(15, true))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessages.QUANTITY.getMessage());
+                .hasMessage(ErrorMessages.STOCK_OVERFLOW.getMessage());
     }
 }

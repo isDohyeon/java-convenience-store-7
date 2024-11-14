@@ -5,6 +5,7 @@ import java.util.Map;
 import store.domain.Product;
 import store.domain.Products;
 import store.domain.Promotion;
+import store.messages.ErrorMessages;
 import store.utils.FileUtils;
 
 public class ProductLoader {
@@ -20,9 +21,14 @@ public class ProductLoader {
         items.stream()
                 .flatMap(request -> request.entrySet().stream())
                 .forEach(entry -> {
-                    Product product = products.findProductByName(entry.getKey());
-                    product.validateStock(entry.getValue());
+                    if (isTotalStockShortage(products.findProductByName(entry.getKey()), entry.getValue())) {
+                        throw new IllegalArgumentException(ErrorMessages.STOCK_OVERFLOW.getMessage());
+                    }
                 });
+    }
+
+    private static boolean isTotalStockShortage(Product product, Integer purchaseQuantity) {
+        return product.getPromotionStock() + product.getDefaultStock() < purchaseQuantity;
     }
 
     public Products getProducts() {

@@ -12,7 +12,7 @@ public class Receipt {
     private int membershipDiscount;
 
     public void addPurchasedItem(String productName, int quantity, int amount) {
-        purchasedItems.add(String.format("%-15s %5d %10s", productName, quantity, formatPrice(amount)));
+        purchasedItems.add(String.format("%-19s%-10s%-6s%n", productName, quantity, formatPrice(amount)));
     }
 
     public void addFreeItem(String productName, int quantity) {
@@ -39,6 +39,10 @@ public class Receipt {
         return String.format("%,d", amount);
     }
 
+    private String formatDiscountPrice(int amount) {
+        return String.format("-%,d", amount);
+    }
+
     public String generateReceipt() {
         StringBuilder receiptBuilder = new StringBuilder();
 
@@ -50,10 +54,10 @@ public class Receipt {
         freeItems.forEach(item -> receiptBuilder.append(item).append("\n"));
         receiptBuilder.append("====================================\n");
 
-        receiptBuilder.append(String.format("%-18s %-11s%-6s%n", "총구매액", getTotalQuantity(), formatPrice(totalAmount)));
-        receiptBuilder.append(String.format("%-30s %-5s%n", "행사할인", formatPrice(-promotionDiscount)));
-        receiptBuilder.append(String.format("%-30s %-5s%n", "멤버십할인", formatPrice(-membershipDiscount)));
-        receiptBuilder.append(String.format("%-30s %-5s%n", "내실돈", formatPrice(getFinalAmount())));
+        receiptBuilder.append(String.format("%-18s %-9s %-6s\n", "총구매액", getTotalQuantity(), formatPrice(totalAmount)));
+        receiptBuilder.append(String.format("%-27s %-5s\n", "행사할인", formatDiscountPrice(promotionDiscount)));
+        receiptBuilder.append(String.format("%-27s %-5s\n", "멤버십할인", formatDiscountPrice(membershipDiscount)));
+        receiptBuilder.append(String.format("%-28s %-5s\n", "내실돈", formatPrice(getFinalAmount())));
 
         return receiptBuilder.toString();
     }

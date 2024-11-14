@@ -2,7 +2,7 @@ package store.domain;
 
 import java.util.List;
 import java.util.Map;
-import store.constants.ErrorMessages;
+import store.messages.ErrorMessages;
 import store.utils.FileUtils;
 
 public class Products {
@@ -22,6 +22,6 @@ public class Products {
                 .filter(product -> product.getName().equals(productName))
                 .findFirst()
                 .orElseThrow(()
-                        -> new IllegalArgumentException(ErrorMessages.PRODUCT_NAME.getMessage()));
+                        -> new IllegalArgumentException(ErrorMessages.UNKNOWN_PRODUCT.getMessage()));
     }
 }

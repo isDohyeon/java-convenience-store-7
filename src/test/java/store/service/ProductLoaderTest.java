@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import store.constants.ErrorMessages;
+import store.messages.ErrorMessages;
 import store.domain.Product;
 import store.domain.Products;
 
@@ -61,10 +61,10 @@ class ProductLoaderTest {
 
         assertThatThrownBy(() -> productLoader.validateProducts(List.of(product1)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessages.QUANTITY.getMessage());
+                .hasMessage(ErrorMessages.STOCK_OVERFLOW.getMessage());
 
         assertThatThrownBy(() -> productLoader.validateProducts(List.of(product2)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorMessages.PRODUCT_NAME.getMessage());
+                .hasMessage(ErrorMessages.UNKNOWN_PRODUCT.getMessage());
     }
 }

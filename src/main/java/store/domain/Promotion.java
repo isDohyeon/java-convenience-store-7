@@ -27,7 +27,10 @@ public class Promotion {
                 && (date.isEqual(endDate) || date.isBefore(endDate));
     }
 
-    public boolean isInsufficientPurchase(int quantity) {
+    public boolean isInsufficientPurchase(int quantity, int promotionStock) {
+        if (promotionStock < quantity + 1) {
+            return false;
+        }
         if (buyCount == 1 && quantity % 2 != 0) {
             return true;
         }
@@ -36,6 +39,10 @@ public class Promotion {
 
     public String getName() {
         return name;
+    }
+
+    public int getFreeCount() {
+        return freeCount;
     }
 
     public int getSingleSet() {

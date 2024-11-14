@@ -1,7 +1,5 @@
 package store.domain;
 
-import store.constants.ErrorMessages;
-
 public class Product {
 
     private final String name;
@@ -48,8 +46,7 @@ public class Product {
     public void reduceStock(int quantity, boolean isPromotionStock) {
         if (isPromotionStock) {
             if (promotionStock < quantity) {
-                defaultStock -= (quantity - promotionStock);
-                promotionStock = 0;
+                handleTotalStock(quantity);
                 return;
             }
             promotionStock -= quantity;
@@ -58,10 +55,9 @@ public class Product {
         this.defaultStock -= quantity;
     }
 
-    public void validateStock(int quantity) {
-        if (promotionStock + defaultStock < quantity) {
-            throw new IllegalArgumentException(ErrorMessages.QUANTITY.getMessage());
-        }
+    private void handleTotalStock(int quantity) {
+        defaultStock -= (quantity - promotionStock);
+        promotionStock = 0;
     }
 
     public String getName() {

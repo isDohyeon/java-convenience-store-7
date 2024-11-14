@@ -4,7 +4,6 @@ import static store.utils.OutputParser.parseProducts;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 import store.service.ProductLoader;
 import store.service.PurchaseProcessor;
 import store.view.InputView;
